@@ -5,26 +5,26 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.List;
-
-@Getter
 @Setter
-@Builder
+@Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "order")
-@Table(name = "orders")
-public class OrderEntity {
+@Entity(name = "order_item")
+@Table(name = "order_items")
+public class OrderItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @JdbcTypeCode(SqlTypes.BIGINT)
     private Long id;
 
-    private String orderNumber;
+    private String sku;
+    private Double price;
+    private Integer quantity;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", nullable = false)
     @ToString.Exclude
-    private List<OrderItemEntity> items;
+    private OrderEntity order;
 }
