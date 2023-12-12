@@ -10,7 +10,7 @@ public class OpenApi {
     public io.swagger.v3.oas.models.OpenAPI customOpenAPI() {
         return new io.swagger.v3.oas.models.OpenAPI()
                 .info(new io.swagger.v3.oas.models.info.Info()
-                        .title("Suehay's Products API")
+                        .title("Suehay's Order API")
                         .version("1.0.0")
                         .description("Products API v1.0.0")
                         .termsOfService("http://swagger.io/terms/"));

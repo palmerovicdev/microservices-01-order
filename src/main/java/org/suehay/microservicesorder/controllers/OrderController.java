@@ -13,7 +13,7 @@ import org.suehay.microservicesorder.services.OrderServiceImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderServiceImpl orderService;

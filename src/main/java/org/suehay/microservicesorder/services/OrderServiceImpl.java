@@ -1,6 +1,7 @@
 package org.suehay.microservicesorder.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.suehay.microservicesorder.models.entities.OrderEntity;
@@ -18,6 +19,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
+    @Value("${api.url}")
+    public static String API_URL;
+    @Value("${services.prefix.inventory}")
+    private static String INVENTORY_PREFIX;
     private final OrderEntityRepository orderEntityRepository;
     private final WebClient.Builder webClient;
 
@@ -25,22 +30,22 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderItemResponse> create(OrderRequest order) {
         var baseResponse = webClient.build()
                                     .post()
-                                    .uri("http://localhost:8081/api/inventory/in-stock")
+                                    .uri(API_URL + INVENTORY_PREFIX + "/in-stock")
                                     .bodyValue(order.getItems())
                                     .retrieve()
                                     .bodyToMono(BaseResponse.class)
                                     .block();
         if (Objects.nonNull(baseResponse) && baseResponse.isSuccess()) {
 
-            OrderEntity orderEntity = OrderEntity.builder()
-                                                 .orderNumber(order.getOrderNumber())
-                                                 .items(order.getItems().stream().map(orderItemRequest -> {
-                                                     OrderItemEntity orderItemEntity = new OrderItemEntity();
-                                                     orderItemEntity.setSku(orderItemRequest.getSku());
-                                                     orderItemEntity.setPrice(orderItemRequest.getPrice());
-                                                     orderItemEntity.setQuantity(orderItemRequest.getQuantity());
-                                                     return orderItemEntity;
-                                                 }).collect(java.util.stream.Collectors.toList())).build();
+            var orderEntity = OrderEntity.builder()
+                                         .orderNumber(order.getOrderNumber())
+                                         .items(order.getItems().stream().map(orderItemRequest -> {
+                                             OrderItemEntity orderItemEntity = new OrderItemEntity();
+                                             orderItemEntity.setSku(orderItemRequest.getSku());
+                                             orderItemEntity.setPrice(orderItemRequest.getPrice());
+                                             orderItemEntity.setQuantity(orderItemRequest.getQuantity());
+                                             return orderItemEntity;
+                                         }).collect(java.util.stream.Collectors.toList())).build();
             orderEntity.getItems().forEach(orderItemEntity -> orderItemEntity.setOrder(orderEntity));
             orderEntityRepository.save(orderEntity);
 
