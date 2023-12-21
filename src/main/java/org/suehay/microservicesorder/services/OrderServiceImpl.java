@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     @Value("${api.url}")
-    public static String API_URL;
+    public String API_URL;
     @Value("${services.prefix.inventory}")
-    private static String INVENTORY_PREFIX;
+    private String INVENTORY_PREFIX;
     private final OrderEntityRepository orderEntityRepository;
     private final WebClient.Builder webClient;
 
